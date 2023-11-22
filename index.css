@@ -1,0 +1,35 @@
+#chat-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+#chat-header {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+#chat-body {
+  padding: 10px;
+}
+
+#chat-messages {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#user-input {
+  width: 70%;
+  padding: 5px;
+}
+
+button {
+  padding: 5px;
+}
