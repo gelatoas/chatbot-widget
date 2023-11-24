@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Create the chat widget container dynamically
-  var chatContainer = document.createElement("div");
-  chatContainer.id = "chat-widget-container";
+  // var chatContainer = document.createElement("div");
+  // chatContainer.id = "chat-widget-container";
+  var chatContainer = document.getElementById("chat-widget-container");
   chatContainer.style.display = "none";
 
   // Additional styles for the chat container
