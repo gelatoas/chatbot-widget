@@ -2,10 +2,10 @@ function createContainer() {
   var chatContainer = document.getElementById('chat-widget-container');
 
   chatContainer.style.position = 'fixed';
-  chatContainer.style.bottom = '70px';
-  chatContainer.style.right = '20px';
-  chatContainer.style.width = '410px';
-  chatContainer.style.height = '640px';
+  chatContainer.style.bottom = '2%';
+  chatContainer.style.right = '2%';
+  chatContainer.style.width = '28%';
+  chatContainer.style.height = '80vh';
   chatContainer.style.border = '1px solid #ccc';
   chatContainer.style.borderRadius = '10px';
   chatContainer.style.background = '#fff';
@@ -19,16 +19,17 @@ function createContainer() {
   chatMessages.id = 'chat-messages';
   chatMessages.style.height = 'calc(100% - 50px)';
   chatMessages.style.overflowY = 'auto';
-  chatMessages.style.paddingTop = '40px';
+  chatMessages.style.paddingTop = '10%';
   chatContainer.appendChild(chatMessages);
 
   var header = document.createElement('div');
   header.style.background = '#3498db';
-  header.style.padding = '10px';
+  header.style.padding = '2%';
   header.style.textAlign = 'center';
-  header.style.fontWeight = 'bold';
+  // header.style.fontWeight = 'bold';
   header.style.color = '#fff';
   header.textContent = 'How can we help?';
+  header.style.fontSize = '16px';
   header.style.position = 'absolute';
   header.style.top = '0';
   header.style.width = '100%';
@@ -42,18 +43,19 @@ function createContainer() {
   closeButton.style.color = '#555';
   closeButton.style.cursor = 'pointer';
   closeButton.style.position = 'absolute';
-  closeButton.style.top = '10px';
-  closeButton.style.right = '10px';
+  closeButton.style.top = '1%';
+  closeButton.style.right = '2%';
 
   header.appendChild(closeButton);
   chatContainer.appendChild(header);
 
   var inputContainer = document.createElement('div');
   inputContainer.style.display = 'flex';
-  inputContainer.style.justifyContent = 'flex-end';
-  inputContainer.style.margin = '5px';
+  // inputContainer.style.justifyContent = 'flex-end';
+  inputContainer.style.margin = '1%';
   inputContainer.style.position = 'absolute';
   inputContainer.style.bottom = '0';
+  inputContainer.style.width = '100%';
   // inputContainer.style.border = '1';
 
   var userInput = document.createElement('input');
@@ -62,17 +64,17 @@ function createContainer() {
   userInput.placeholder = 'Type your message...';
   userInput.style.border = '2px solid #ccc';
   userInput.style.borderRadius = '5px';
-  userInput.style.padding = '10px';
+  userInput.style.padding = '3%';
   // userInput.style.margin = '5px';
   userInput.style.fontSize = '16px';
-  userInput.style.width = '330px';
+  userInput.style.width = '80%';
   userInput.style.boxShadow = '0 0 5px rgba(0, 0, 0, 0.1)';
 
   var sendButton = document.createElement('button');
   sendButton.id = 'send-button';
   sendButton.textContent = 'Send';
-  sendButton.style.width = '50px';
-  sendButton.style.marginLeft = '5px';
+  sendButton.style.width = '14%';
+  sendButton.style.marginLeft = '2%';
   // sendButton.style.padding = '10px';
   sendButton.style.border = 'none';
   sendButton.style.borderRadius = '5px';
@@ -198,3 +200,4 @@ function createContainer() {
 }
 
 createContainer();
+// git main file
