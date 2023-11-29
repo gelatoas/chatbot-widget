@@ -19,12 +19,14 @@ function createContainer() {
   chatMessages.id = 'chat-messages';
   chatMessages.style.height = 'calc(100% - 50px)';
   chatMessages.style.overflowY = 'auto';
-  chatMessages.style.paddingTop = '10%';
+  chatMessages.style.paddingTop = '15%';
+  chatMessages.style.paddingLeft = '5%';
+  chatMessages.style.width = '95%';
   chatContainer.appendChild(chatMessages);
 
   var header = document.createElement('div');
-  header.style.background = '#3498db';
-  header.style.padding = '2%';
+  header.style.background = '#212529';
+  header.style.padding = '4%';
   header.style.textAlign = 'center';
   // header.style.fontWeight = 'bold';
   header.style.color = '#fff';
@@ -36,7 +38,9 @@ function createContainer() {
 
   var closeButton = document.createElement('button');
   closeButton.id = 'close-chat';
-  closeButton.innerHTML = '&times;';
+  closeButton.innerHTML =
+    '<svg data-v-3a871e6c="" data-v-1709d122="" viewBox="0 0 24 24" class="svg-icon svg-fill svg-up cl-icon cl-chatbox-btn" aria-label="Close widget" role="button" tabindex="6" style="width: 24px; height: 24px; min-width: 24px;"><path fill="white" stroke="none" pid="0" d="M4 12a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1Z" _fill="currentColor"></path></svg>';
+
   closeButton.style.fontSize = '20px';
   closeButton.style.border = 'none';
   closeButton.style.backgroundColor = 'transparent';
@@ -45,6 +49,7 @@ function createContainer() {
   closeButton.style.position = 'absolute';
   closeButton.style.top = '1%';
   closeButton.style.right = '2%';
+  closeButton.style.paddingTop = '2%';
 
   header.appendChild(closeButton);
   chatContainer.appendChild(header);
@@ -69,6 +74,8 @@ function createContainer() {
   userInput.style.fontSize = '16px';
   userInput.style.width = '80%';
   userInput.style.boxShadow = '0 0 5px rgba(0, 0, 0, 0.1)';
+  // userInput.style.resize = 'vertical';
+  // userInput.rows = 2;
 
   var sendButton = document.createElement('button');
   sendButton.id = 'send-button';
@@ -78,7 +85,7 @@ function createContainer() {
   // sendButton.style.padding = '10px';
   sendButton.style.border = 'none';
   sendButton.style.borderRadius = '5px';
-  sendButton.style.background = '#3498db';
+  sendButton.style.background = '#212529';
   sendButton.style.color = '#fff';
   sendButton.style.fontWeight = 'bold';
   sendButton.style.cursor = 'pointer';
@@ -99,7 +106,7 @@ function createContainer() {
   chatButton.style.position = 'fixed';
   chatButton.style.bottom = '20px';
   chatButton.style.right = '20px';
-  chatButton.style.backgroundColor = '#3498db';
+  chatButton.style.backgroundColor = '#0c5a9f';
   chatButton.style.color = '#ffffff';
   chatButton.style.padding = '10px';
   chatButton.style.border = 'none';
@@ -160,7 +167,7 @@ function createContainer() {
   }
 
   .sender {
-    background-color: #4CAF50;
+    background-color: #0c5a9f;
     color: white;
     padding: 10px;
     margin: 5px 0;
@@ -169,7 +176,7 @@ function createContainer() {
   }
 
   .receiver {
-    background-color: #f1f1f1;
+    background-color: #c1c1c1;
     color: black;
     padding: 10px;
     margin: 5px 0;
@@ -200,4 +207,3 @@ function createContainer() {
 }
 
 createContainer();
-// git main file
