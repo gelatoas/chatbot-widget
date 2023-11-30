@@ -1,4 +1,5 @@
 function createContainer() {
+  var threadId = "";
   var chatContainer = document.getElementById("chat-widget-container");
 
   chatContainer.style.position = "fixed";
@@ -17,7 +18,7 @@ function createContainer() {
 
   var chatMessages = document.createElement("div");
   chatMessages.id = "chat-messages";
-  chatMessages.style.height = "calc(100% - 50px)";
+  chatMessages.style.height = "calc(100% - 120px)";
   chatMessages.style.overflowY = "auto";
   chatMessages.style.paddingTop = "15%";
   chatMessages.style.paddingLeft = "5%";
@@ -120,6 +121,22 @@ function createContainer() {
     chatButton.style.display = "block";
   });
 
+  function filterErrors(errorString) {
+    const errorArray = errorString.split("\n");
+
+    // const filteredErrors = errorArray.filter(
+    //   (line) => !/^\&#8203;``【oaicite:2】``&#8203;$/.test(line)
+    // );
+    const filteredErrors = errorString.replace(
+      /^\s*\&#8203;``【oaicite:1】``&#8203;\s*$/gm,
+      ""
+    );
+
+    const resultString = filteredErrors.join("\n");
+
+    return resultString;
+  }
+
   sendButton.addEventListener("click", function () {
     var message = userInput.value;
     if (message.trim() !== "") {
@@ -142,7 +159,10 @@ function createContainer() {
       )
         .then((response) => response.json())
         .then((data) => {
-          sendMessage("bot", data.data.comment);
+          threadId = data.data.threadId;
+          // var comment = filterErrors(data.data.comment);
+          var comment = data.data.comment;
+          sendMessage("bot", comment);
         })
         .catch((error) => {
           console.error("Error during API call:", error);
@@ -186,12 +206,74 @@ function createContainer() {
     border-radius: 10px;
     float: left;
   }
+
+  .feedback-buttons button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    // font-size: 16px; /* Adjust the font size as needed */
+}
 `;
 
   var styleElement = document.createElement("style");
   styleElement.type = "text/css";
   styleElement.appendChild(document.createTextNode(chatStyles));
   document.head.appendChild(styleElement);
+
+  function handleFeedback(threadId, feedback) {
+    var requestBody = {
+      feedback: feedback,
+    };
+
+    fetch(
+      `https://dashboard.test.gelato.tech/api/error-report/v1/assistance/${threadId}/feedback`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        // sendMessage("bot", data.data.comment);
+        var feedbackStart = document.getElementById(
+          "feedbackStart-" + threadId
+        );
+        var feedbackComplete = document.getElementById(
+          "feedbackComplete-" + threadId
+        );
+
+        feedbackStart.style.display = "none";
+        feedbackComplete.style.display = "block";
+      })
+      .catch((error) => {
+        console.error("Error during API call:", error);
+      });
+  }
+
+  function createThumbButton(iconPath, className) {
+    const button = document.createElement("button");
+    button.classList.add("icon-button");
+    // button.innerHTML = "Click me";
+
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    svg.setAttribute("height", "16");
+    svg.setAttribute("width", "16");
+    svg.setAttribute("viewBox", "0 0 512 512");
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", iconPath);
+    path.setAttribute("fill", "black");
+    // Append path to SVG, and SVG to the button
+    svg.appendChild(path);
+    button.appendChild(svg);
+
+    return button;
+  }
 
   function sendMessage(sender, message) {
     var messageElement = document.createElement("div");
@@ -201,6 +283,40 @@ function createContainer() {
       messageElement.className = "sender";
     } else {
       messageElement.className = "receiver";
+
+      var feedbackDiv = document.createElement("div");
+      feedbackDiv.id = "feedbackStart-" + threadId;
+      feedbackDiv.className = "feedback-buttons";
+
+      var thumbsUpButton = createThumbButton(
+        "M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z"
+      );
+      thumbsUpButton.addEventListener("click", function () {
+        var feedback = 1;
+        handleFeedback(threadId, feedback);
+      });
+
+      var thumbsDownButton = createThumbButton(
+        "M313.4 479.1c26-5.2 42.9-30.5 37.7-56.5l-2.3-11.4c-5.3-26.7-15.1-52.1-28.8-75.2H464c26.5 0 48-21.5 48-48c0-18.5-10.5-34.6-25.9-42.6C497 236.6 504 223.1 504 208c0-23.4-16.8-42.9-38.9-47.1c4.4-7.3 6.9-15.8 6.9-24.9c0-21.3-13.9-39.4-33.1-45.6c.7-3.3 1.1-6.8 1.1-10.4c0-26.5-21.5-48-48-48H294.5c-19 0-37.5 5.6-53.3 16.1L202.7 73.8C176 91.6 160 121.6 160 153.7V192v48 24.9c0 29.2 13.3 56.7 36 75l7.4 5.9c26.5 21.2 44.6 51 51.2 84.2l2.3 11.4c5.2 26 30.5 42.9 56.5 37.7zM32 384H96c17.7 0 32-14.3 32-32V128c0-17.7-14.3-32-32-32H32C14.3 96 0 110.3 0 128V352c0 17.7 14.3 32 32 32z"
+      );
+      thumbsDownButton.addEventListener("click", function () {
+        var feedback = -1;
+        handleFeedback(threadId, feedback);
+      });
+      var feedbackMsg = document.createElement("span");
+      feedbackMsg.innerHTML = "Are you satisfied with this answer?";
+      feedbackDiv.appendChild(feedbackMsg);
+      feedbackDiv.appendChild(thumbsUpButton);
+      feedbackDiv.appendChild(thumbsDownButton);
+
+      messageElement.appendChild(document.createElement("hr"));
+      messageElement.appendChild(feedbackDiv);
+
+      var feedbackCompleteSpan = document.createElement("span");
+      feedbackCompleteSpan.id = "feedbackComplete-" + threadId;
+      feedbackCompleteSpan.innerHTML = "Thank you";
+      feedbackCompleteSpan.style.display = "none";
+      messageElement.appendChild(feedbackCompleteSpan);
     }
 
     chatMessages.appendChild(messageElement);
