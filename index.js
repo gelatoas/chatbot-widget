@@ -50,7 +50,7 @@ function createContainer() {
   header.style.textAlign = "center";
   // header.style.fontWeight = 'bold';
   header.style.color = "#fff";
-  header.textContent = "How can we help?";
+  header.textContent = "✨ Gelato GPT";
   header.style.fontSize = "16px";
   header.style.position = "absolute";
   header.style.top = "0";
@@ -126,11 +126,11 @@ function createContainer() {
   chatButton.style.position = "fixed";
   chatButton.style.bottom = "20px";
   chatButton.style.right = "20px";
-  chatButton.style.backgroundColor = "#0c5a9f";
+  chatButton.style.backgroundColor = "#212529";
   chatButton.style.color = "#ffffff";
   chatButton.style.padding = "10px";
   chatButton.style.border = "none";
-  chatButton.style.borderRadius = "5px";
+  chatButton.style.borderRadius = "30px";
   chatButton.style.cursor = "pointer";
   chatButton.textContent = "✨ Gelato GPT";
   chatButton.addEventListener("click", toggleChatContainer);
@@ -140,20 +140,14 @@ function createContainer() {
     chatButton.style.display = "block";
   });
 
-  function filterErrors(errorString) {
-    const errorArray = errorString.split("\n");
+  function filterErrors(text) {
+    let start = text.indexOf("【");
+    let end = text.indexOf("】");
 
-    // const filteredErrors = errorArray.filter(
-    //   (line) => !/^\&#8203;``【oaicite:2】``&#8203;$/.test(line)
-    // );
-    const filteredErrors = errorString.replace(
-      /^\s*\&#8203;``【oaicite:1】``&#8203;\s*$/gm,
-      ""
-    );
+    let beginText = text.substring(0, start);
+    let endText = text.substring(end + 1, text.length);
 
-    const resultString = filteredErrors.join("\n");
-
-    return resultString;
+    return beginText + endText;
   }
 
   sendButton.addEventListener("click", function () {
@@ -180,14 +174,18 @@ function createContainer() {
         .then((response) => response.json())
         .then((data) => {
           threadId = data.data.threadId;
-          // var comment = filterErrors(data.data.comment);
-          var comment = data.data.comment;
+          var comment = filterErrors(data.data.comment);
+          // var comment = data.data.comment;
           sendMessage("bot", comment, true);
           typingElement.style.display = "none";
         })
         .catch((error) => {
           console.error("Error during API call:", error);
-          sendMessage("bot", "Sorry, something went wrong", false);
+          sendMessage(
+            "bot",
+            "Sorry, looks like something went wrong.Please try again or reach out to gc-support@gelato.com for further queries.",
+            false
+          );
           typingElement.style.display = "none";
         });
       userInput.value = "";
@@ -215,7 +213,9 @@ function createContainer() {
   .sender {
     background-color: #0c5a9f;
     color: white;
-    padding: 10px;
+    // padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
     margin: 5px 0;
     border-radius: 10px;
     float: right;
@@ -224,7 +224,10 @@ function createContainer() {
   .receiver {
     background-color: #c1c1c1;
     color: black;
-    padding: 10px;
+    // padding: 10px;
+    padding-left: 10px;
+    padding-right: 5px;
+    padding-bottom: 5px;
     margin: 5px 0;
     border-radius: 10px;
     float: left;
@@ -243,6 +246,11 @@ function createContainer() {
   styleElement.type = "text/css";
   styleElement.appendChild(document.createTextNode(chatStyles));
   document.head.appendChild(styleElement);
+
+  const script = document.createElement("script");
+  script.type = "module";
+  script.src = "https://md-block.verou.me/md-block.js";
+  document.head.appendChild(script);
 
   function handleFeedback(threadId, feedback) {
     var requestBody = {
@@ -300,7 +308,12 @@ function createContainer() {
 
   function sendMessage(sender, message, showFeedback) {
     var messageElement = document.createElement("div");
-    messageElement.textContent = message; // sender + ': ' + message;
+    var feedbackDiv = document.createElement("div");
+    var feedbackCompleteSpan = document.createElement("span");
+    var mdBlock = document.createElement("md-block");
+    var hrElement = document.createElement("hr");
+
+    mdBlock.innerHTML = message;
 
     if (sender === "user") {
       messageElement.className = "sender";
@@ -308,7 +321,6 @@ function createContainer() {
       messageElement.className = "receiver";
 
       if (showFeedback) {
-        var feedbackDiv = document.createElement("div");
         feedbackDiv.id = "feedbackStart-" + threadId;
         feedbackDiv.className = "feedback-buttons";
 
@@ -329,24 +341,30 @@ function createContainer() {
         });
         var feedbackMsg = document.createElement("span");
         feedbackMsg.innerHTML = "Are you satisfied with this answer?";
+
+        hrElement.style.border = "none";
+        hrElement.style.height = "1px";
+        hrElement.style.backgroundColor = "black";
+        // feedbackDiv.appendChild(hrElement);
+
         feedbackDiv.appendChild(feedbackMsg);
         feedbackDiv.appendChild(thumbsUpButton);
         feedbackDiv.appendChild(thumbsDownButton);
 
-        var hrElement = document.createElement("hr");
-        hrElement.style.border = "none";
-        hrElement.style.height = "1px";
-        hrElement.style.backgroundColor = "black";
-        messageElement.appendChild(hrElement);
-        messageElement.appendChild(feedbackDiv);
+        // mdBlock.appendChild(feedbackDiv);
 
-        var feedbackCompleteSpan = document.createElement("span");
         feedbackCompleteSpan.id = "feedbackComplete-" + threadId;
-        feedbackCompleteSpan.innerHTML = "Thank you";
+        feedbackCompleteSpan.innerHTML = "Thank you for your feedback";
+        feedbackCompleteSpan.style.float = "right";
         feedbackCompleteSpan.style.display = "none";
-        messageElement.appendChild(feedbackCompleteSpan);
       }
     }
+    messageElement.appendChild(mdBlock);
+    if (sender === "bot" && showFeedback) {
+      messageElement.appendChild(hrElement);
+    }
+    messageElement.appendChild(feedbackDiv);
+    messageElement.appendChild(feedbackCompleteSpan);
 
     chatMessages.appendChild(messageElement);
     chatMessages.scrollTop = chatMessages.scrollHeight;
