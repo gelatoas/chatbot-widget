@@ -27,7 +27,7 @@ function createContainer() {
 
   var typingElement = document.createElement("div");
   typingElement.id = "typingElement";
-  typingElement.innerHTML = "Typing...";
+  typingElement.innerHTML = "Generating...";
   typingElement.style.width = "70px";
   typingElement.style.height = "20px";
   typingElement.style.paddingLeft = "10px";
