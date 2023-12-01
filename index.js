@@ -18,12 +18,31 @@ function createContainer() {
 
   var chatMessages = document.createElement("div");
   chatMessages.id = "chat-messages";
-  chatMessages.style.height = "calc(100% - 120px)";
+  chatMessages.style.height = "calc(100% - 140px)";
   chatMessages.style.overflowY = "auto";
   chatMessages.style.paddingTop = "15%";
   chatMessages.style.paddingLeft = "5%";
   chatMessages.style.width = "90%";
   chatContainer.appendChild(chatMessages);
+
+  var typingElement = document.createElement("div");
+  typingElement.id = "typingElement";
+  typingElement.innerHTML = "Typing...";
+  typingElement.style.width = "70px";
+  typingElement.style.height = "20px";
+  typingElement.style.paddingLeft = "10px";
+  typingElement.style.marginBottom = "15%";
+  typingElement.style.marginRight = "5%";
+  typingElement.style.right = "0";
+  typingElement.style.bottom = "0";
+  typingElement.style.position = "absolute";
+  typingElement.style.backgroundColor = "grey";
+  typingElement.style.color = "white";
+  typingElement.style.borderRadius = "10px";
+  typingElement.style.float = "right";
+  typingElement.style.display = "none";
+
+  chatContainer.appendChild(typingElement);
 
   var header = document.createElement("div");
   header.style.background = "#212529";
@@ -35,7 +54,7 @@ function createContainer() {
   header.style.fontSize = "16px";
   header.style.position = "absolute";
   header.style.top = "0";
-  header.style.width = "93%";
+  header.style.width = "100%";
 
   var closeButton = document.createElement("button");
   closeButton.id = "close-chat";
@@ -61,7 +80,7 @@ function createContainer() {
   inputContainer.style.margin = "1%";
   inputContainer.style.position = "absolute";
   inputContainer.style.bottom = "0";
-  inputContainer.style.width = "97%";
+  inputContainer.style.width = "100%";
   // inputContainer.style.border = '1';
 
   var userInput = document.createElement("input");
@@ -113,7 +132,7 @@ function createContainer() {
   chatButton.style.border = "none";
   chatButton.style.borderRadius = "5px";
   chatButton.style.cursor = "pointer";
-
+  chatButton.textContent = "✨ Gelato GPT";
   chatButton.addEventListener("click", toggleChatContainer);
 
   closeButton.addEventListener("click", function () {
@@ -138,9 +157,10 @@ function createContainer() {
   }
 
   sendButton.addEventListener("click", function () {
+    typingElement.style.display = "block";
     var message = userInput.value;
     if (message.trim() !== "") {
-      sendMessage("user", message);
+      sendMessage("user", message, true);
       var assistantId = chatContainer.getAttribute("assistantId");
       var requestBody = {
         assistantId: assistantId,
@@ -162,10 +182,13 @@ function createContainer() {
           threadId = data.data.threadId;
           // var comment = filterErrors(data.data.comment);
           var comment = data.data.comment;
-          sendMessage("bot", comment);
+          sendMessage("bot", comment, true);
+          typingElement.style.display = "none";
         })
         .catch((error) => {
           console.error("Error during API call:", error);
+          sendMessage("bot", "Sorry, something went wrong", false);
+          typingElement.style.display = "none";
         });
       userInput.value = "";
     }
@@ -275,7 +298,7 @@ function createContainer() {
     return button;
   }
 
-  function sendMessage(sender, message) {
+  function sendMessage(sender, message, showFeedback) {
     var messageElement = document.createElement("div");
     messageElement.textContent = message; // sender + ': ' + message;
 
@@ -284,45 +307,56 @@ function createContainer() {
     } else {
       messageElement.className = "receiver";
 
-      var feedbackDiv = document.createElement("div");
-      feedbackDiv.id = "feedbackStart-" + threadId;
-      feedbackDiv.className = "feedback-buttons";
+      if (showFeedback) {
+        var feedbackDiv = document.createElement("div");
+        feedbackDiv.id = "feedbackStart-" + threadId;
+        feedbackDiv.className = "feedback-buttons";
 
-      var thumbsUpButton = createThumbButton(
-        "M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z"
-      );
-      thumbsUpButton.addEventListener("click", function () {
-        var feedback = 1;
-        handleFeedback(threadId, feedback);
-      });
+        var thumbsUpButton = createThumbButton(
+          "M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z"
+        );
+        thumbsUpButton.addEventListener("click", function () {
+          var feedback = 1;
+          handleFeedback(threadId, feedback);
+        });
 
-      var thumbsDownButton = createThumbButton(
-        "M313.4 479.1c26-5.2 42.9-30.5 37.7-56.5l-2.3-11.4c-5.3-26.7-15.1-52.1-28.8-75.2H464c26.5 0 48-21.5 48-48c0-18.5-10.5-34.6-25.9-42.6C497 236.6 504 223.1 504 208c0-23.4-16.8-42.9-38.9-47.1c4.4-7.3 6.9-15.8 6.9-24.9c0-21.3-13.9-39.4-33.1-45.6c.7-3.3 1.1-6.8 1.1-10.4c0-26.5-21.5-48-48-48H294.5c-19 0-37.5 5.6-53.3 16.1L202.7 73.8C176 91.6 160 121.6 160 153.7V192v48 24.9c0 29.2 13.3 56.7 36 75l7.4 5.9c26.5 21.2 44.6 51 51.2 84.2l2.3 11.4c5.2 26 30.5 42.9 56.5 37.7zM32 384H96c17.7 0 32-14.3 32-32V128c0-17.7-14.3-32-32-32H32C14.3 96 0 110.3 0 128V352c0 17.7 14.3 32 32 32z"
-      );
-      thumbsDownButton.addEventListener("click", function () {
-        var feedback = -1;
-        handleFeedback(threadId, feedback);
-      });
-      var feedbackMsg = document.createElement("span");
-      feedbackMsg.innerHTML = "Are you satisfied with this answer?";
-      feedbackDiv.appendChild(feedbackMsg);
-      feedbackDiv.appendChild(thumbsUpButton);
-      feedbackDiv.appendChild(thumbsDownButton);
+        var thumbsDownButton = createThumbButton(
+          "M313.4 479.1c26-5.2 42.9-30.5 37.7-56.5l-2.3-11.4c-5.3-26.7-15.1-52.1-28.8-75.2H464c26.5 0 48-21.5 48-48c0-18.5-10.5-34.6-25.9-42.6C497 236.6 504 223.1 504 208c0-23.4-16.8-42.9-38.9-47.1c4.4-7.3 6.9-15.8 6.9-24.9c0-21.3-13.9-39.4-33.1-45.6c.7-3.3 1.1-6.8 1.1-10.4c0-26.5-21.5-48-48-48H294.5c-19 0-37.5 5.6-53.3 16.1L202.7 73.8C176 91.6 160 121.6 160 153.7V192v48 24.9c0 29.2 13.3 56.7 36 75l7.4 5.9c26.5 21.2 44.6 51 51.2 84.2l2.3 11.4c5.2 26 30.5 42.9 56.5 37.7zM32 384H96c17.7 0 32-14.3 32-32V128c0-17.7-14.3-32-32-32H32C14.3 96 0 110.3 0 128V352c0 17.7 14.3 32 32 32z"
+        );
+        thumbsDownButton.addEventListener("click", function () {
+          var feedback = -1;
+          handleFeedback(threadId, feedback);
+        });
+        var feedbackMsg = document.createElement("span");
+        feedbackMsg.innerHTML = "Are you satisfied with this answer?";
+        feedbackDiv.appendChild(feedbackMsg);
+        feedbackDiv.appendChild(thumbsUpButton);
+        feedbackDiv.appendChild(thumbsDownButton);
 
-      messageElement.appendChild(document.createElement("hr"));
-      messageElement.appendChild(feedbackDiv);
+        var hrElement = document.createElement("hr");
+        hrElement.style.border = "none";
+        hrElement.style.height = "1px";
+        hrElement.style.backgroundColor = "black";
+        messageElement.appendChild(hrElement);
+        messageElement.appendChild(feedbackDiv);
 
-      var feedbackCompleteSpan = document.createElement("span");
-      feedbackCompleteSpan.id = "feedbackComplete-" + threadId;
-      feedbackCompleteSpan.innerHTML = "Thank you";
-      feedbackCompleteSpan.style.display = "none";
-      messageElement.appendChild(feedbackCompleteSpan);
+        var feedbackCompleteSpan = document.createElement("span");
+        feedbackCompleteSpan.id = "feedbackComplete-" + threadId;
+        feedbackCompleteSpan.innerHTML = "Thank you";
+        feedbackCompleteSpan.style.display = "none";
+        messageElement.appendChild(feedbackCompleteSpan);
+      }
     }
 
     chatMessages.appendChild(messageElement);
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
   closeButton.click();
+  sendMessage(
+    "bot",
+    "Hi 👋, I’m GelatoGPT. Just ask me any questions you have about GelatoConnect Procurement and I will be happy to help!",
+    false
+  );
 }
 
 createContainer();
