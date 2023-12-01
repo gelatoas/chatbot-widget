@@ -27,7 +27,7 @@ function createContainer() {
 
   var typingElement = document.createElement("div");
   typingElement.id = "typingElement";
-  typingElement.innerHTML = "Generating...";
+  typingElement.innerHTML = "Typing...";
   typingElement.style.width = "70px";
   typingElement.style.height = "20px";
   typingElement.style.paddingLeft = "10px";
@@ -151,8 +151,12 @@ function createContainer() {
   }
 
   sendButton.addEventListener("click", function () {
-    typingElement.style.display = "block";
     var message = userInput.value;
+    if (message) {
+      typingElement.style.display = "block";
+      userInput.disabled = true;
+      sendButton.disabled = true;
+    }
     if (message.trim() !== "") {
       sendMessage("user", message, true);
       var assistantId = chatContainer.getAttribute("assistantId");
@@ -178,6 +182,8 @@ function createContainer() {
           // var comment = data.data.comment;
           sendMessage("bot", comment, true);
           typingElement.style.display = "none";
+          userInput.disabled = false;
+          sendButton.disabled = false;
         })
         .catch((error) => {
           console.error("Error during API call:", error);
@@ -187,6 +193,8 @@ function createContainer() {
             false
           );
           typingElement.style.display = "none";
+          userInput.disabled = false;
+          sendButton.disabled = false;
         });
       userInput.value = "";
     }
