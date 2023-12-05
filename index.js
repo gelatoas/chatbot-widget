@@ -161,11 +161,17 @@ function createContainer() {
       sendMessage('user', message, true);
       var assistantId = chatContainer.getAttribute('assistantId');
       var requestBody = {
-        assistantId: assistantId,
+        threadId: threadId,
         comment: message,
       };
+      const isProduction = true;
+      const baseURL = isProduction
+        ? 'https://dashboard.gelato.com/api/error-report/v1/assistance'
+        : 'https://dashboard.test.gelato.tech/api/error-report/v1/assistance';
 
-      fetch(`https://dashboard.test.gelato.tech/api/error-report/v1/assistance/${assistantId}/ask`, {
+      const URL = `${baseURL}/${assistantId}/ask`;
+
+      fetch(`${URL}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
