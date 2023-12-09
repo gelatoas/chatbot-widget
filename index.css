@@ -1,35 +1,119 @@
-#chat-widget {
+.chat-container {
+  position: fixed;
+  bottom: 2%;
+  right: 2%;
+  width: 28%;
+  height: 80vh;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.chat-messages {
+  height: calc(100% - 85px);
+  overflow-y: auto;
+  padding-top: 15%;
+  padding-left: 5%;
+  width: 95%;
+}
+.typing-element {
+  width: 250px;
+  height: 20px;
+  padding-left: 10px;
+  margin-bottom: 15%;
+  margin-right: 5%;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  background-color: grey;
+  color: white;
+  border-radius: 10px;
+  float: right;
+  display: none;
+}
+.chat-header {
+  background: #212529;
+  padding: 4%;
+  text-align: center;
+  color: #fff;
+  font-size: 16px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.close-chat {
+  font-size: 20px;
+  border: none;
+  background-color: transparent;
+  color: #555;
+  cursor: pointer;
+  position: absolute;
+  top: 1%;
+  right: 2%;
+  padding-top: 2%;
+}
+.close-icon {
+  height: 32px;
+  width: 32px;
+}
+
+.input-container {
+  display: flex;
+  margin: 1%;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+.user-input {
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  padding: 3%;
+  font-size: 16px;
+  width: 80%;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+.send-button {
+  width: 14%;
+  margin-left: 2%;
+  border: none;
+  border-radius: 5px;
+  background: #212529;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+.chat-button {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-#chat-header {
-  background-color: #4caf50;
-  color: white;
+  background-color: #212529;
+  color: #ffffff;
   padding: 10px;
-  text-align: center;
+  border: none;
+  border-radius: 30px;
   cursor: pointer;
 }
-
-#chat-body {
+.sender {
+  background-color: #0c5a9f;
+  color: white;
   padding: 10px;
+  margin: 5px 0;
+  border-radius: 10px;
+  float: right;
 }
-
-#chat-messages {
-  max-height: 200px;
-  overflow-y: auto;
+.receiver {
+  background-color: #c1c1c1;
+  color: black;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 10px;
+  float: left;
 }
-
-#user-input {
-  width: 70%;
-  padding: 5px;
-}
-
-button {
-  padding: 5px;
+.feedback-buttons button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
 }
