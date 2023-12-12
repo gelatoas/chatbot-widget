@@ -110,6 +110,8 @@ function createContainer() {
     sendMessage("user", message, true);
 
     const assistantId = chatContainer.getAttribute("assistantId");
+    const disableThread = chatContainer.getAttribute("disableThread");
+
     const requestBody = {
       threadId: threadId,
       comment: message,
@@ -120,7 +122,12 @@ function createContainer() {
       ? "https://dashboard.gelato.com/api/error-report/v1/assistance"
       : "https://dashboard.test.gelato.tech/api/error-report/v1/assistance";
 
-    const URL = `${baseURL}/${assistantId}/ask`;
+    let URL;
+    if (disableThread) {
+      URL = `${baseURL}/${assistantId}/ask?disableThread=true`;
+    } else {
+      URL = `${baseURL}/${assistantId}/ask`;
+    }
 
     fetch(`${URL}`, {
       method: "POST",
@@ -253,13 +260,14 @@ function createContainer() {
     var messageElement = document.createElement("div");
     var feedbackDiv = document.createElement("div");
     const enableFeedback = chatContainer.getAttribute("enableFeedback")?.trim();
-    if (!enableFeedback) {
-      feedbackDiv.style.display = "none";
-    }
+
     var feedbackCompleteSpan = document.createElement("span");
     var mdBlock = document.createElement("md-block");
     var hrElement = document.createElement("hr");
-    hrElement.style.display = "none";
+    if (!enableFeedback) {
+      feedbackDiv.style.display = "none";
+      hrElement.style.display = "none";
+    }
 
     mdBlock.innerHTML = message;
 
