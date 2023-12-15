@@ -23,7 +23,7 @@ function createContainer() {
 
   // Elements section start
   var chatContainer = document.getElementById("chat-widget-container");
-  chatContainer.id = "chat-container";
+  // chatContainer.id = "chat-container";
   chatContainer.classList.add("chat-container");
   document.body.appendChild(chatContainer);
 
