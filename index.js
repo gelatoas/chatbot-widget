@@ -56,7 +56,7 @@ function createContainer() {
   closeButton.addEventListener("click", handleCloseButtonClick);
 
   var svgImage = document.createElement("img");
-  svgImage.classList.add("close-icon");
+  svgImage.classList.add("close-icon-32");
   svgImage.src =
     "https://gelatoas.github.io/chatbot-widget/assets/close-icon.png";
   svgImage.alt = "Close icon";
