@@ -19,6 +19,12 @@ function createContainer() {
   const defaultWelcomeMessage = "Hi 👋, I’m GelatoGPT. How can I help you ?";
   var threadId = "";
   var isChatContainerVisible = false;
+  const isProduction = true;
+  const baseURL = isProduction
+    ? "https://dashboard.gelato.com/api/error-report/v1/assistance"
+    : "https://dashboard.test.gelato.tech/api/error-report/v1/assistance";
+
+  const assistantId = chatContainer.getAttribute("assistantId");
   // Attributes section end
 
   // Elements section start
@@ -109,18 +115,12 @@ function createContainer() {
     disableInput();
     sendMessage("user", message, true);
 
-    const assistantId = chatContainer.getAttribute("assistantId");
     const disableThread = chatContainer.getAttribute("disableThread");
 
     const requestBody = {
       threadId: threadId,
       comment: message,
     };
-
-    const isProduction = true;
-    const baseURL = isProduction
-      ? "https://dashboard.gelato.com/api/error-report/v1/assistance"
-      : "https://dashboard.test.gelato.tech/api/error-report/v1/assistance";
 
     let URL;
     if (disableThread) {
@@ -208,16 +208,13 @@ function createContainer() {
       feedback: feedback,
     };
 
-    fetch(
-      `https://dashboard.test.gelato.tech/api/error-report/v1/assistance/${threadId}/feedback`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      }
-    )
+    fetch(`${baseURL}/${threadId}/feedback`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    })
       .then((response) => response.json())
       .then((data) => {
         // sendMessage("bot", data.data.comment);
