@@ -23,8 +23,6 @@ function createContainer() {
   const baseURL = isProduction
     ? "https://dashboard.gelato.com/api/error-report/v1/assistance"
     : "https://dashboard.test.gelato.tech/api/error-report/v1/assistance";
-
-  const assistantId = chatContainer.getAttribute("assistantId");
   // Attributes section end
 
   // Elements section start
@@ -121,7 +119,7 @@ function createContainer() {
       threadId: threadId,
       comment: message,
     };
-
+    const assistantId = chatContainer.getAttribute("assistantId");
     let URL;
     if (disableThread) {
       URL = `${baseURL}/${assistantId}/ask?disableThread=true`;
