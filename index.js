@@ -18,6 +18,7 @@ function createContainer() {
   // Attributes section start
   const defaultWelcomeMessage = "Hi 👋, I’m GelatoGPT. How can I help you ?";
   var threadId = "";
+  var feedbackId = "";
   var isChatContainerVisible = false;
   const isProduction = true;
   const baseURL = isProduction
@@ -137,6 +138,8 @@ function createContainer() {
       .then((response) => response.json())
       .then((data) => {
         threadId = data.data.threadId;
+        feedbackId = data.data.feedbackId;
+
         const comment = filterErrors(data.data.comment);
         sendMessage("bot", comment, true);
       })
@@ -201,12 +204,12 @@ function createContainer() {
     isChatContainerVisible = !isChatContainerVisible;
   }
 
-  function handleFeedback(threadId, feedback) {
+  function handleFeedback(feedbackId, feedback) {
     var requestBody = {
       feedback: feedback,
     };
 
-    fetch(`${baseURL}/${threadId}/feedback`, {
+    fetch(`${baseURL}/${feedbackId}/feedback`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -217,10 +220,10 @@ function createContainer() {
       .then((data) => {
         // sendMessage("bot", data.data.comment);
         var feedbackStart = document.getElementById(
-          "feedbackStart-" + threadId
+          "feedbackStart-" + feedbackId
         );
         var feedbackComplete = document.getElementById(
-          "feedbackComplete-" + threadId
+          "feedbackComplete-" + feedbackId
         );
 
         feedbackStart.style.display = "none";
@@ -272,7 +275,7 @@ function createContainer() {
       messageElement.className = "receiver";
 
       if (showFeedback) {
-        feedbackDiv.id = "feedbackStart-" + threadId;
+        feedbackDiv.id = "feedbackStart-" + feedbackId;
         feedbackDiv.className = "feedback-buttons";
 
         var thumbsUpButton = createThumbButton(
@@ -280,7 +283,7 @@ function createContainer() {
         );
         thumbsUpButton.addEventListener("click", function () {
           var feedback = 1;
-          handleFeedback(threadId, feedback);
+          handleFeedback(feedbackId, feedback);
         });
 
         var thumbsDownButton = createThumbButton(
@@ -288,7 +291,7 @@ function createContainer() {
         );
         thumbsDownButton.addEventListener("click", function () {
           var feedback = -1;
-          handleFeedback(threadId, feedback);
+          handleFeedback(feedbackId, feedback);
         });
         var feedbackMsg = document.createElement("span");
         feedbackMsg.innerHTML = "Are you satisfied with this answer?";
@@ -304,7 +307,7 @@ function createContainer() {
 
         // mdBlock.appendChild(feedbackDiv);
 
-        feedbackCompleteSpan.id = "feedbackComplete-" + threadId;
+        feedbackCompleteSpan.id = "feedbackComplete-" + feedbackId;
         feedbackCompleteSpan.innerHTML = "Thank you for your feedback";
         feedbackCompleteSpan.style.float = "right";
         feedbackCompleteSpan.style.display = "none";
