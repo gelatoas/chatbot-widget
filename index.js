@@ -3,8 +3,8 @@ function createContainer() {
   const linkElement = document.createElement("link");
   linkElement.rel = "stylesheet";
   linkElement.type = "text/css";
-  linkElement.href = "https://gelatoas.github.io/chatbot-widget/index.css";
-  // linkElement.href = '/chatbot/index.css';
+  // linkElement.href = 'https://gelatoas.github.io/chatbot-widget/index.css';
+  linkElement.href = "/chatbot/index.css";
   document.head.appendChild(linkElement);
   // CSS files section end
 
@@ -324,6 +324,11 @@ function createContainer() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
+  function handleReportProblemButton(description, link) {
+    const message = `${description} ${link}`;
+    sendMessage("bot", message, false);
+  }
+
   function init() {
     closeButton.click();
     const attributeWelcomeMessage =
@@ -332,7 +337,26 @@ function createContainer() {
       ? attributeWelcomeMessage
       : defaultWelcomeMessage;
     sendMessage("bot", welcomeMessage, false);
+
+    const buttonString = chatContainer.getAttribute("buttons");
+    const buttons = JSON.parse(`[${buttonString}]`);
+    if (buttons && buttons.length > 0) {
+      for (const button of buttons) {
+        if (button && button.length > 0) {
+          for (const b of button) {
+            const bu = document.createElement("button");
+            bu.textContent = b.name;
+            bu.className = "button-18";
+            bu.addEventListener("click", function () {
+              handleReportProblemButton(b.description, b.link);
+            });
+            chatMessages.appendChild(bu);
+          }
+        }
+      }
+    }
   }
+
   // Function ends
   init();
 }
