@@ -3,8 +3,8 @@ function createContainer() {
   const linkElement = document.createElement("link");
   linkElement.rel = "stylesheet";
   linkElement.type = "text/css";
-  // linkElement.href = 'https://gelatoas.github.io/chatbot-widget/index.css';
-  linkElement.href = "/chatbot/index.css";
+  linkElement.href = "https://gelatoas.github.io/chatbot-widget/index.css";
+  // linkElement.href = "/chatbot/index.css";
   document.head.appendChild(linkElement);
   // CSS files section end
 
