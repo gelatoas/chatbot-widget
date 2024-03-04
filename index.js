@@ -339,7 +339,8 @@ function createContainer() {
     sendMessage("bot", welcomeMessage, false);
 
     const buttonString = chatContainer.getAttribute("buttons");
-    const buttons = JSON.parse(`[${buttonString}]`);
+    let buttons = JSON.parse(`[${buttonString}]`);
+    buttons = [];
     if (buttons && buttons.length > 0) {
       for (const button of buttons) {
         if (button && button.length > 0) {
